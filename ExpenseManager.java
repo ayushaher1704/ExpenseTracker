@@ -48,7 +48,7 @@ public void loadTransactions() {
 
         while ((line = reader.readLine()) != null) {
 
-            String[] data = line.split(",");
+            String[] data = line.split(",",-1);
 
             double amount = Double.parseDouble(data[0]);
             String type = data[1];
@@ -110,5 +110,13 @@ public void loadTransactions() {
 public double getBalance() {
 
     return getTotalIncome() - getTotalExpenses();
+}
+public void deleteTransaction(int index) {
+
+    transactions.remove(index);
+}
+public void updateTransaction(int index, Transaction transaction) {
+
+    transactions.set(index, transaction);
 }
 }

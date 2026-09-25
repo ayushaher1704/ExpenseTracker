@@ -6,12 +6,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Gui {
     static ExpenseManager manager = new ExpenseManager();
 
     public static void main(String[] args) {
+        manager.loadTransactions();
 
         // Main window
         JFrame frame = new JFrame("Expense Tracker");
@@ -42,7 +44,7 @@ public class Gui {
         balanceCard.setBackground(Color.WHITE);
         balanceCard.setLayout(null);
 
-        JLabel balance = new JLabel("<html>Balance<br>₹19,650</html>");
+        JLabel balance = new JLabel("<html>Balance<br>₹" + manager.getBalance() + "</html>");
         balance.setFont(new Font("Arial", Font.BOLD, 18));
         balance.setBounds(20, 20, 170, 80);
 
@@ -58,7 +60,7 @@ public class Gui {
         incomeCard.setBackground(Color.WHITE);
         incomeCard.setLayout(null);
 
-        JLabel income = new JLabel("<html>Income<br>₹20,000</html>");
+        JLabel income = new JLabel("<html>Income<br>₹" + manager.getTotalIncome() + "</html>");
         income.setFont(new Font("Arial", Font.BOLD, 18));
         income.setBounds(20, 20, 170, 80);
 
@@ -74,7 +76,7 @@ public class Gui {
         expenseCard.setBackground(Color.WHITE);
         expenseCard.setLayout(null);
 
-        JLabel expenses = new JLabel("<html>Expenses<br>₹350</html>");
+        JLabel expenses = new JLabel("<html>Expenses<br>₹" + manager.getTotalExpenses() + "</html>");
         expenses.setFont(new Font("Arial", Font.BOLD, 18));
         expenses.setBounds(20, 20, 170, 80);
 
@@ -89,6 +91,16 @@ tableModel.addColumn("Category");
 tableModel.addColumn("Date");
 tableModel.addColumn("Description");
 JTable transactionTable = new JTable(tableModel);
+for (Transaction transaction : manager.transactions) {
+
+    tableModel.addRow(new Object[]{
+        transaction.amount,
+        transaction.type,
+        transaction.category,
+        transaction.date,
+        transaction.description
+    });
+}
 JScrollPane scrollPane = new JScrollPane(transactionTable);
 scrollPane.setBounds(50, 350, 700, 180);
 frame.add(scrollPane);
@@ -208,6 +220,57 @@ saveButton.addActionListener(event -> {
     System.out.println("Amount entered: " + amountText);
 });
 });
+JButton deleteButton = new JButton("DELETE TRANSACTION");
+
+deleteButton.setFont(new Font("Arial", Font.BOLD, 14));
+deleteButton.setBounds(285, 530, 230, 45);
+
+frame.add(deleteButton);
+deleteButton.addActionListener(e -> {
+
+    int selectedRow = transactionTable.getSelectedRow();
+
+    if (selectedRow != -1) {
+
+        manager.deleteTransaction(selectedRow);
+        tableModel.removeRow(selectedRow);
+        manager.saveTransactions();
+
+    }
+
+});
+JButton editButton = new JButton("EDIT TRANSACTION");
+
+editButton.setFont(new Font("Arial", Font.BOLD, 14));
+editButton.setBounds(530, 530, 230, 45);
+
+frame.add(editButton);
+editButton.addActionListener(e -> {
+
+    int selectedRow = transactionTable.getSelectedRow();
+
+    if (selectedRow != -1) {
+
+        Transaction selectedTransaction = manager.transactions.get(selectedRow);
+        JFrame editFrame = new JFrame("Edit Transaction");
+editFrame.setSize(450, 420);
+editFrame.setLayout(null);
+editFrame.setLocationRelativeTo(frame);
+JLabel editAmountLabel = new JLabel("Amount:");
+editAmountLabel.setBounds(50, 40, 100, 30);
+editFrame.add(editAmountLabel);
+
+JTextField editAmountField =
+        new JTextField(String.valueOf(selectedTransaction.amount));
+editAmountField.setBounds(150, 40, 220, 30);
+editFrame.add(editAmountField);
+editFrame.setVisible(true);
+
+    }
+   
+
+});
+
 
         // Show window
         frame.setVisible(true);
