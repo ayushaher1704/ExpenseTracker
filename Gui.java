@@ -1,15 +1,34 @@
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class Gui {
+    public static void filterTable(JTextField searchField,
+                               TableRowSorter<DefaultTableModel> sorter) {
+
+    String searchText = searchField.getText();
+
+    if (searchText.trim().length() == 0) {
+
+        sorter.setRowFilter(null);
+
+    } else {
+
+        sorter.setRowFilter(
+                RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(searchText))
+        );
+    }
+}
     static ExpenseManager manager = new ExpenseManager();
 
     public static void main(String[] args) {
@@ -90,7 +109,37 @@ tableModel.addColumn("Type");
 tableModel.addColumn("Category");
 tableModel.addColumn("Date");
 tableModel.addColumn("Description");
+JLabel searchLabel = new JLabel("Search:");
+searchLabel.setFont(new Font("Arial", Font.BOLD, 14));
+searchLabel.setBounds(50, 315, 60, 30);
+frame.add(searchLabel);
+
+JTextField searchField = new JTextField();
+searchField.setBounds(110, 315, 300, 30);
+frame.add(searchField);
+
 JTable transactionTable = new JTable(tableModel);
+
+TableRowSorter<DefaultTableModel> sorter =
+        new TableRowSorter<>(tableModel);
+        searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+
+    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        filterTable(searchField, sorter);
+    }
+
+    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+        filterTable(searchField, sorter);
+    }
+
+    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+        filterTable(searchField, sorter);
+    }
+
+});
+
+
+transactionTable.setRowSorter(sorter);
 for (Transaction transaction : manager.transactions) {
 
     tableModel.addRow(new Object[]{
@@ -264,6 +313,99 @@ JTextField editAmountField =
         new JTextField(String.valueOf(selectedTransaction.amount));
 editAmountField.setBounds(150, 40, 220, 30);
 editFrame.add(editAmountField);
+JLabel editTypeLabel = new JLabel("Type:");
+editTypeLabel.setBounds(50, 90, 100, 30);
+editFrame.add(editTypeLabel);
+
+String[] editTypes = {"Expense", "Income"};
+
+JComboBox<String> editTypeBox =
+        new JComboBox<>(editTypes);
+
+editTypeBox.setSelectedItem(selectedTransaction.type);
+editTypeBox.setBounds(150, 90, 220, 30);
+
+editFrame.add(editTypeBox);
+JLabel editCategoryLabel = new JLabel("Category:");
+editCategoryLabel.setBounds(50, 140, 100, 30);
+editFrame.add(editCategoryLabel);
+
+String[] editCategories = {
+    "Food",
+    "Travel",
+    "Shopping",
+    "Bills",
+    "Education",
+    "Salary",
+    "Other"
+};
+
+JComboBox<String> editCategoryBox =
+        new JComboBox<>(editCategories);
+
+editCategoryBox.setSelectedItem(selectedTransaction.category);
+editCategoryBox.setBounds(150, 140, 220, 30);
+
+editFrame.add(editCategoryBox);
+JLabel editDateLabel = new JLabel("Date:");
+editDateLabel.setBounds(50, 190, 100, 30);
+editFrame.add(editDateLabel);
+
+JTextField editDateField =
+        new JTextField(selectedTransaction.date);
+
+editDateField.setBounds(150, 190, 220, 30);
+
+editFrame.add(editDateField);
+JLabel editDescriptionLabel = new JLabel("Description:");
+editDescriptionLabel.setBounds(50, 240, 100, 30);
+editFrame.add(editDescriptionLabel);
+
+JTextField editDescriptionField =
+        new JTextField(selectedTransaction.description);
+
+editDescriptionField.setBounds(150, 240, 220, 30);
+
+editFrame.add(editDescriptionField);
+JButton updateButton = new JButton("UPDATE TRANSACTION");
+
+updateButton.setFont(new Font("Arial", Font.BOLD, 14));
+updateButton.setBounds(120, 300, 210, 45);
+
+editFrame.add(updateButton);
+
+updateButton.addActionListener(evt -> {
+
+    double updatedAmount =
+            Double.parseDouble(editAmountField.getText());
+
+    String updatedType =
+            (String) editTypeBox.getSelectedItem();
+
+    String updatedCategory =
+            (String) editCategoryBox.getSelectedItem();
+
+    String updatedDate =
+            editDateField.getText();
+
+    String updatedDescription =
+            editDescriptionField.getText();
+            Transaction updatedTransaction = new Transaction(
+        updatedAmount,
+        updatedType,
+        updatedCategory,
+        updatedDate,
+        updatedDescription
+);
+manager.updateTransaction(selectedRow, updatedTransaction);
+tableModel.setValueAt(updatedAmount, selectedRow, 0);
+tableModel.setValueAt(updatedType, selectedRow, 1);
+tableModel.setValueAt(updatedCategory, selectedRow, 2);
+tableModel.setValueAt(updatedDate, selectedRow, 3);
+tableModel.setValueAt(updatedDescription, selectedRow, 4);
+manager.saveTransactions();
+
+});
 editFrame.setVisible(true);
 
     }
