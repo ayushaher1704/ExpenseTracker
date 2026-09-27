@@ -119,4 +119,12 @@ public void updateTransaction(int index, Transaction transaction) {
 
     transactions.set(index, transaction);
 }
+public void saveTransactionsInBackground() {
+
+    Thread thread = new Thread(() -> {
+        saveTransactions();
+    });
+
+    thread.start();
+}
 }

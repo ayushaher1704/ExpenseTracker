@@ -4,6 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -241,8 +242,19 @@ descriptionField.setBounds(160, 240, 200, 30);
 transactionFrame.add(descriptionField);
 
 saveButton.addActionListener(event -> {
-    String amountText = amountField.getText();
-    double amount = Double.parseDouble(amountText);
+  String amountText = amountField.getText();
+
+double amount;
+
+try {
+    amount = Double.parseDouble(amountText);
+} catch (NumberFormatException ex) {
+    JOptionPane.showMessageDialog(
+        frame,
+        "Please enter a valid amount."
+    );
+    return;
+}
 
     String type = (String) typeBox.getSelectedItem();
     String category = (String) categoryBox.getSelectedItem();
@@ -264,8 +276,8 @@ saveButton.addActionListener(event -> {
         date,
         description
 });
-    manager.saveTransactions();
-
+    manager.saveTransactionsInBackground();
+    
     System.out.println("Amount entered: " + amountText);
 });
 });
