@@ -31,6 +31,23 @@ public class Gui {
     }
 }
     static ExpenseManager manager = new ExpenseManager();
+    static JLabel income;
+    static JLabel expenses;
+    static JLabel balance;
+    public static void updateDashboard() {
+
+    income.setText(
+        "<html>Income<br>₹" + manager.getTotalIncome() + "</html>"
+    );
+
+    expenses.setText(
+        "<html>Expenses<br>₹" + manager.getTotalExpenses() + "</html>"
+    );
+
+    balance.setText(
+        "<html>Balance<br>₹" + manager.getBalance() + "</html>"
+    );
+}
 
     public static void main(String[] args) {
         manager.loadTransactions();
@@ -64,7 +81,7 @@ public class Gui {
         balanceCard.setBackground(Color.WHITE);
         balanceCard.setLayout(null);
 
-        JLabel balance = new JLabel("<html>Balance<br>₹" + manager.getBalance() + "</html>");
+        balance = new JLabel("<html>Balance<br>₹" + manager.getBalance() + "</html>");
         balance.setFont(new Font("Arial", Font.BOLD, 18));
         balance.setBounds(20, 20, 170, 80);
 
@@ -80,7 +97,7 @@ public class Gui {
         incomeCard.setBackground(Color.WHITE);
         incomeCard.setLayout(null);
 
-        JLabel income = new JLabel("<html>Income<br>₹" + manager.getTotalIncome() + "</html>");
+        income = new JLabel("<html>Income<br>₹" + manager.getTotalIncome() + "</html>");
         income.setFont(new Font("Arial", Font.BOLD, 18));
         income.setBounds(20, 20, 170, 80);
 
@@ -96,7 +113,7 @@ public class Gui {
         expenseCard.setBackground(Color.WHITE);
         expenseCard.setLayout(null);
 
-        JLabel expenses = new JLabel("<html>Expenses<br>₹" + manager.getTotalExpenses() + "</html>");
+        expenses = new JLabel("<html>Expenses<br>₹" + manager.getTotalExpenses() + "</html>");
         expenses.setFont(new Font("Arial", Font.BOLD, 18));
         expenses.setBounds(20, 20, 170, 80);
 
@@ -276,8 +293,10 @@ try {
         date,
         description
 });
+updateDashboard();
+
     manager.saveTransactionsInBackground();
-    
+
     System.out.println("Amount entered: " + amountText);
 });
 });
@@ -295,6 +314,7 @@ deleteButton.addActionListener(e -> {
 
         manager.deleteTransaction(selectedRow);
         tableModel.removeRow(selectedRow);
+        updateDashboard();
         manager.saveTransactions();
 
     }
@@ -416,6 +436,7 @@ tableModel.setValueAt(updatedCategory, selectedRow, 2);
 tableModel.setValueAt(updatedDate, selectedRow, 3);
 tableModel.setValueAt(updatedDescription, selectedRow, 4);
 manager.saveTransactions();
+updateDashboard();
 
 });
 editFrame.setVisible(true);
