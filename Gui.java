@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -54,7 +55,7 @@ public class Gui {
 
         // Main window
         JFrame frame = new JFrame("Expense Tracker");
-        frame.setSize(800, 600);
+        frame.setSize(800, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
@@ -66,11 +67,18 @@ public class Gui {
         // TITLE
         // =========================
 
+        JPanel header = new JPanel();
+        header.setBounds(0, 0, 800, 90);
+        header.setBackground(new Color(35, 47, 62));
+        header.setLayout(null);
+
         JLabel title = new JLabel("EXPENSE TRACKER");
         title.setFont(new Font("Arial", Font.BOLD, 28));
-        title.setBounds(270, 30, 300, 50);
+        title.setForeground(Color.WHITE);
+        title.setBounds(270, 20, 300, 50);
 
-        frame.add(title);
+        header.add(title);
+        frame.add(header);
 
         // =========================
         // BALANCE CARD
@@ -79,11 +87,17 @@ public class Gui {
         JPanel balanceCard = new JPanel();
         balanceCard.setBounds(50, 110, 210, 120);
         balanceCard.setBackground(Color.WHITE);
+        balanceCard.setBorder(
+    javax.swing.BorderFactory.createLineBorder(
+        new Color(220, 225, 230)
+    )
+);
         balanceCard.setLayout(null);
 
         balance = new JLabel("<html>Balance<br>₹" + manager.getBalance() + "</html>");
-        balance.setFont(new Font("Arial", Font.BOLD, 18));
-        balance.setBounds(20, 20, 170, 80);
+       balance.setFont(new Font("Arial", Font.BOLD, 20));
+balance.setHorizontalAlignment(JLabel.CENTER);
+balance.setBounds(10, 20, 190, 80);
 
         balanceCard.add(balance);
         frame.add(balanceCard);
@@ -95,11 +109,17 @@ public class Gui {
         JPanel incomeCard = new JPanel();
         incomeCard.setBounds(295, 110, 210, 120);
         incomeCard.setBackground(Color.WHITE);
+        incomeCard.setBorder(
+    javax.swing.BorderFactory.createLineBorder(
+        new Color(220, 225, 230)
+    )
+);
         incomeCard.setLayout(null);
 
         income = new JLabel("<html>Income<br>₹" + manager.getTotalIncome() + "</html>");
-        income.setFont(new Font("Arial", Font.BOLD, 18));
-        income.setBounds(20, 20, 170, 80);
+       income.setFont(new Font("Arial", Font.BOLD, 20));
+income.setHorizontalAlignment(JLabel.CENTER);
+income.setBounds(10, 20, 190, 80);
 
         incomeCard.add(income);
         frame.add(incomeCard);
@@ -111,11 +131,17 @@ public class Gui {
         JPanel expenseCard = new JPanel();
         expenseCard.setBounds(540, 110, 210, 120);
         expenseCard.setBackground(Color.WHITE);
+        expenseCard.setBorder(
+    javax.swing.BorderFactory.createLineBorder(
+        new Color(220, 225, 230)
+    )
+);
         expenseCard.setLayout(null);
 
         expenses = new JLabel("<html>Expenses<br>₹" + manager.getTotalExpenses() + "</html>");
-        expenses.setFont(new Font("Arial", Font.BOLD, 18));
-        expenses.setBounds(20, 20, 170, 80);
+       expenses.setFont(new Font("Arial", Font.BOLD, 20));
+expenses.setHorizontalAlignment(JLabel.CENTER);
+expenses.setBounds(10, 20, 190, 80);
 
         expenseCard.add(expenses);
         frame.add(expenseCard);
@@ -129,14 +155,35 @@ tableModel.addColumn("Date");
 tableModel.addColumn("Description");
 JLabel searchLabel = new JLabel("Search:");
 searchLabel.setFont(new Font("Arial", Font.BOLD, 14));
-searchLabel.setBounds(50, 315, 60, 30);
+searchLabel.setBounds(300, 270, 60, 30);
+
 frame.add(searchLabel);
 
 JTextField searchField = new JTextField();
-searchField.setBounds(110, 315, 300, 30);
+searchField.setBounds(360, 270, 390, 30);
+
 frame.add(searchField);
 
 JTable transactionTable = new JTable(tableModel);
+transactionTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+transactionTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+transactionTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+transactionTable.getColumnModel().getColumn(3).setPreferredWidth(130);
+transactionTable.getColumnModel().getColumn(4).setPreferredWidth(200);
+transactionTable.getTableHeader().setFont(
+    new Font("Arial", Font.BOLD, 14)
+);
+
+transactionTable.setFont(
+    new Font("Arial", Font.PLAIN, 14)
+);
+
+transactionTable.setRowHeight(28);
+transactionTable.getTableHeader().setBackground(
+    new Color(35, 47, 62)
+);
+
+transactionTable.getTableHeader().setForeground(Color.WHITE);
 
 TableRowSorter<DefaultTableModel> sorter =
         new TableRowSorter<>(tableModel);
@@ -178,7 +225,7 @@ frame.add(scrollPane);
 JButton addButton = new JButton("+ ADD TRANSACTION");
 
 addButton.setFont(new Font("Arial", Font.BOLD, 16));
-addButton.setBounds(285, 270, 230, 50);
+addButton.setBounds(50, 270, 230, 45);
 
 frame.add(addButton);
 
@@ -186,6 +233,9 @@ addButton.addActionListener(e -> {
     JFrame transactionFrame = new JFrame("Add Transaction");
     transactionFrame.setSize(450, 420);
     transactionFrame.setLayout(null);
+    transactionFrame.getContentPane().setBackground(
+    new Color(245, 247, 250)
+);
     transactionFrame.setLocationRelativeTo(frame);
 
     JLabel typeLabel = new JLabel("Type:");
@@ -214,6 +264,12 @@ categoryLabel.setBounds(50, 140, 100, 30);
  JButton saveButton = new JButton("SAVE TRANSACTION");
 
 saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+saveButton.setBackground(new Color(35, 47, 62));
+saveButton.setForeground(Color.WHITE);
+saveButton.setFocusPainted(false);
+saveButton.setOpaque(true);
+saveButton.setBorderPainted(false);
+saveButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 saveButton.setBounds(120, 300, 210, 45);
 
 transactionFrame.add(saveButton);
@@ -276,6 +332,18 @@ try {
     String type = (String) typeBox.getSelectedItem();
     String category = (String) categoryBox.getSelectedItem();
     String date = dateField.getText();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+dateFormat.setLenient(false);
+
+try {
+    dateFormat.parse(date);
+} catch (Exception ex) {
+    JOptionPane.showMessageDialog(
+        transactionFrame,
+        "Please enter a valid date (dd/MM/yyyy)."
+    );
+    return;
+}
     String description = descriptionField.getText();
 
     Transaction transaction = new Transaction(
@@ -303,6 +371,12 @@ updateDashboard();
 JButton deleteButton = new JButton("DELETE TRANSACTION");
 
 deleteButton.setFont(new Font("Arial", Font.BOLD, 14));
+deleteButton.setBackground(new Color(35, 47, 62));
+deleteButton.setForeground(Color.WHITE);
+deleteButton.setFocusPainted(false);
+deleteButton.setOpaque(true);
+deleteButton.setBorderPainted(false);
+deleteButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 deleteButton.setBounds(285, 530, 230, 45);
 
 frame.add(deleteButton);
@@ -323,6 +397,12 @@ deleteButton.addActionListener(e -> {
 JButton editButton = new JButton("EDIT TRANSACTION");
 
 editButton.setFont(new Font("Arial", Font.BOLD, 14));
+editButton.setBackground(new Color(35, 47, 62));
+editButton.setForeground(Color.WHITE);
+editButton.setFocusPainted(false);
+editButton.setOpaque(true);
+editButton.setBorderPainted(false);
+editButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 editButton.setBounds(530, 530, 230, 45);
 
 frame.add(editButton);
@@ -402,6 +482,12 @@ editFrame.add(editDescriptionField);
 JButton updateButton = new JButton("UPDATE TRANSACTION");
 
 updateButton.setFont(new Font("Arial", Font.BOLD, 14));
+updateButton.setBackground(new Color(35, 47, 62));
+updateButton.setForeground(Color.WHITE);
+updateButton.setFocusPainted(false);
+updateButton.setOpaque(true);
+updateButton.setBorderPainted(false);
+updateButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 updateButton.setBounds(120, 300, 210, 45);
 
 editFrame.add(updateButton);
